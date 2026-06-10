@@ -1,18 +1,32 @@
 import React, { useState } from "react";
 import Authlayout from "../../components/Layouts/Authlayout";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Input from "../../components/Inputs/Input";
 
 const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState(null);
-
+ 
 	const navigate = useNavigate();
 
-  const handleLogin = async(e) => {
+	const handleLogin = async (e) => {
+		e.preventDefault();
 
-  }
+    if(!(email)){
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if(!password){
+      setError("Please enter a password");
+      return;
+    }
+
+    setError("");
+
+
+	};
 
 	return (
 		<Authlayout>
@@ -22,24 +36,36 @@ const Login = () => {
 					Please enter your details to log in
 				</p>
 
-        <form onSubmit={handleLogin}>
-          <Input 
-            value={email}
-            onChange={({target}) => setEmail(target.value)}
-            label="Email Address"
-            placeholder="john@example.com"
-            type="text"
-          />
+				<form onSubmit={handleLogin}>
+					<Input
+						value={email}
+						onChange={({ target }) => setEmail(target.value)}
+						label="Email Address"
+						placeholder="john@example.com"
+						type="text"
+					/>
 
-          <Input 
-            value={password}
-            onChange={({target}) => setPassword(target.value)}
-            label="Password"
-            placeholder="Min 8 characters"
-            type="password"
-          />
-        </form>
+					<Input
+						value={password}
+						onChange={({ target }) => setPassword(target.value)}
+						label="Password"
+						placeholder="Min 8 characters"
+						type="password"
+					/>
 
+					{error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
+
+					<button type="submit" className="btn-primary">
+						LOGIN
+					</button>
+
+					<p className="text-[13px] text-slate-800 mt-3">
+						Don't have an account ?{" "}
+						<Link className="font-medium text-primary underline" to="/signup">
+							SignUp
+						</Link>
+					</p>
+				</form>
 			</div>
 		</Authlayout>
 	);

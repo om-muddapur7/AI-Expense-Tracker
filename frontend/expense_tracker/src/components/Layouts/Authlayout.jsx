@@ -17,7 +17,7 @@ const Authlayout = ({children}) => {
 
             <div className='w-48 h-48 rounded-[40px] bg-violet-500 absolute -bottom-7 -left-5' />
 
-            <img src={CARD} alt="" className='w-30 lg:w-[90%] absolute bottom-10 shadow-lg shadow-blue-400/15  ' />
+            <img src={CARD} alt="" className='w-20 h-100 lg:w-[90%] absolute bottom-20 shadow-lg shadow-blue-400/15  ' />
         </div>
 
     </div>
