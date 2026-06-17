@@ -1,9 +1,0 @@
-{
-    "compilerOptions": {
-      "module": "commonjs",
-      "target": "es2020",
-      "checkJs": false
-    },
-    "include": ["backend/**/*", "frontend/**/*"],
-    "exclude": ["node_modules"]
-  }

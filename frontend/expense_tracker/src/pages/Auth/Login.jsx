@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import Authlayout from "../../components/Layouts/Authlayout";
 import { useNavigate, Link } from "react-router-dom";
 import Input from "../../components/Inputs/Input";
+import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import { useContext } from "react";
+import { userContext } from "../../context/userContext";
 
 const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState(null);
+
+	const { updateUser } = useContext(UserContext )
  
 	const navigate = useNavigate();
 
@@ -25,6 +32,29 @@ const Login = () => {
 
     setError("");
 
+	//Login API call
+	try{
+		const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
+			email,
+			password
+		});
+
+		const {token, user} = response.data;
+
+		if(token){
+			localStorage.setItem("token", token);
+			updateUser(user);
+			navigate("/dashboard")
+		}
+	}
+	catch(error){
+		if(error.response && error.response.data.message){
+			setError(error.response.data.message)
+		}
+		else{
+			setError("Something went wrong")
+		}
+	}
 
 	};
 
