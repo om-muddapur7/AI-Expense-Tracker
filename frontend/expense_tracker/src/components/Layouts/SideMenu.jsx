@@ -28,10 +28,11 @@ const SideMenu = ({activeMenu}) => {
             <div className="flex flex-col items-center justify-center gap-3 m-3 mb-7 ">
                 {user?.profileImageUrl ? (
                     <img 
-                        src={user?.profileImageUrl || ""}
+                        src={user?.profileImageUrl?.replace("/upload/", "/uploads/") || ""}
                         alt="Profile Image"
                         className="w-20 h-20 bg-slate-400 rounded-full"
                     />
+                    
                 ) : <CharAvatar 
                     fullName={user?.fullName }
                     width="w-20"
@@ -44,6 +45,8 @@ const SideMenu = ({activeMenu}) => {
                 </h5>
             </div>
 
+            
+
             {SIDE_MENU_DATA.map((item, index) => (
                 <button
                     key={`menu_${index}`}
@@ -53,6 +56,7 @@ const SideMenu = ({activeMenu}) => {
                     <item.icon className="text-xl"/>
                     {item.label}
                 </button>
+                
             ))}
         </div>
     );
