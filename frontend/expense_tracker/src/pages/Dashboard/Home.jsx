@@ -9,6 +9,7 @@ import InfoCard from "../../components/Cards/InfoCard";
 import { LuHandCoins, LuWalletMinimal } from "react-icons/lu";
 import {IoMdCard} from "react-icons/io";
 import { addThousandsSeperator } from "../../utils/helper";
+import RecentTransactions from "../../components/Dashboard/RecentTransactions";
 
 const Home = () => {
 	useUserAuth();
