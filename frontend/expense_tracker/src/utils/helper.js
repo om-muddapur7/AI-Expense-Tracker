@@ -21,3 +21,13 @@ export const addThousandsSeperator = (num) => {
         ? `${formattedInteger}.${fractionalPart}`
         : formattedInteger;
 };
+
+
+export const prepareExpensesBarChartData = (data = []) => {
+    const charData = data.map((item) => ({
+        category: item?.category,
+        amount: item?.amount
+    }));
+
+    return charData;
+};
