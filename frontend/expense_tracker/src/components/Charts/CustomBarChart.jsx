@@ -16,8 +16,6 @@ const CustomBarChart = ({ data }) => {
 		return index % 2 === 0 ? "#875cf5" : "#cfbefb";
 	};
 
-    console.log(data);
-
 	const CustomTooltip = ({ active, payload }) => {
 		if (active && payload && payload.length) {
 			return (
@@ -46,7 +44,7 @@ const CustomBarChart = ({ data }) => {
 					<CartesianGrid stroke="none" />
 
 					<XAxis
-						dataKey="category"
+						dataKey="month"
 						tick={{ fontSize: 12, fill: "#555" }}
 						stroke="none"
 					/>

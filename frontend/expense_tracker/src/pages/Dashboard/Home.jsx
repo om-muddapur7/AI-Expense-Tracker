@@ -89,12 +89,12 @@ const Home = () => {
           />
 
           <ExpenseTransactions 
-            transactions={dashboardData?.last30daysExpenses?.transactions || {}}
+            transactions={dashboardData?.last30daysExpenses?.transactions || []}
             onSeeMore={() => navigate("/expense")}
           />
 
           <Last30DaysExpenses 
-            data={dashboardData?.last30daysExpenses?.transactions || {}}
+            data={dashboardData?.last30daysExpenses?.transactions || []}
           />
 
           <RecentIncomeWithChart 
@@ -103,7 +103,7 @@ const Home = () => {
           />
 
           <RecentIncome 
-            transactions={dashboardData?.last30daysIncomes?.transactions || {}}
+            transactions={dashboardData?.last30daysIncomes?.transactions || []}
             onSeeMore={() => navigate("/income")}
           />
 

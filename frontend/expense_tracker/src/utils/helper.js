@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getInitials = (name) => {
     if(!name) return "";
 
@@ -25,8 +27,22 @@ export const addThousandsSeperator = (num) => {
 
 export const prepareExpensesBarChartData = (data = []) => {
     const charData = data.map((item) => ({
+        month: moment(item?.date).format("Do MMM YYYY"),
         category: item?.category,
         amount: item?.amount
+    }));
+
+    return charData;
+};
+
+
+export const prepareIncomeBarChartData = (data = []) => {
+    const sortedData = [...data].sort((a,b) => new Date(a.date) - new Date(b.date));
+
+    const charData = sortedData.map((item) => ({
+        month: moment(item?.date).format("Do MMM YYYY"),
+        amount: item?.amount,
+        source: item?.source
     }));
 
     return charData;
