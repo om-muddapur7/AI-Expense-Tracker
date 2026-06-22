@@ -15,6 +15,7 @@ import ExpenseTransactions from "../../components/Dashboard/ExpenseTransactions"
 import Last30DaysExpenses from "../../components/Dashboard/Last30DaysExpenses";
 import RecentIncomeWithChart from "../../components/Dashboard/RecentIncomeWithChart";
 import RecentIncome from "../../components/Dashboard/RecentIncome";
+import AIInsights from "../../components/Dashboard/AIInsights";
 
 const Home = () => {
 	useUserAuth();
@@ -87,6 +88,8 @@ const Home = () => {
             totalIncome={dashboardData?.totalIncome || 0}
             totalExpense={dashboardData?.totalExpense || 0}
           />
+
+          <AIInsights />
 
           <ExpenseTransactions 
             transactions={dashboardData?.last30daysExpenses?.transactions || []}
