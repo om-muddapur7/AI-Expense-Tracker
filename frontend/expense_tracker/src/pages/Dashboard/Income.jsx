@@ -11,7 +11,6 @@ import DeleteAlert from "../../components/DeleteAlert";
 import { useUserAuth } from "../../hooks/useUserAuth";
 
 const Income = () => {
-
 	useUserAuth();
 
 	const [openAddIncomeModal, setOpenAddIncomeModal] = useState(false);
@@ -63,21 +62,23 @@ const Income = () => {
 			return;
 		}
 
-    try {
-      const response = await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME, {
-        source,
-        amount,
-        date,
-        icon
-      });
+		try {
+			const response = await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME, {
+				source,
+				amount,
+				date,
+				icon,
+			});
 
-      setOpenAddIncomeModal(false);
-      toast.success("Income Added successfully");
-      fetchIncomeDetails();
-
-    } catch (error) {
-      console.error("Error adding income: ", error.response?.data?.message || error.message);
-    }
+			setOpenAddIncomeModal(false);
+			toast.success("Income Added successfully");
+			fetchIncomeDetails();
+		} catch (error) {
+			console.error(
+				"Error adding income: ",
+				error.response?.data?.message || error.message,
+			);
+		}
 	};
 
 	//delete income details
@@ -85,16 +86,41 @@ const Income = () => {
 		try {
 			await axiosInstance.delete(API_PATHS.INCOME.DELETE_INCOME(id));
 
-			setOpenDeleteAlert({show: false, data:null});
+			setOpenDeleteAlert({ show: false, data: null });
 			toast.success("Income details deletd successfully");
 			fetchIncomeDetails();
 		} catch (error) {
-			console.error("Error deleting message: ", error?.response?.data?.message || error.message);
+			console.error(
+				"Error deleting message: ",
+				error?.response?.data?.message || error.message,
+			);
 		}
 	};
 
 	//download income details
-	const handleDownloadIncome = async () => {};
+	const handleDownloadIncome = async () => {
+		try {
+			const response = await axiosInstance.get(
+				API_PATHS.INCOME.DOWNLOAD_INCOME,
+				{
+					responseType: "blob",
+				},
+			);
+
+			//URL for blob
+			const url = window.URL.createObjectURL(new Blob([response.data]));
+			const link = document.createElement("a");
+			link.href = url;
+			link.setAttribute("download", "income_details.xlsx");
+			document.body.appendChild(link);
+			link.click();
+			link.parentNode.removeChild(link);
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error("Error downloading income details", error);
+			toast.error("Failed to download income details. Please try again");
+		}
+	};
 
 	useEffect(() => {
 		fetchIncomeDetails();
@@ -113,14 +139,13 @@ const Income = () => {
 						/>
 					</div>
 
-          <IncomeList 
-            transactions={incomeData}
-            onDelete={(id) => {
-              setOpenDeleteAlert({show: true, data: id});
-            }}
-            onDownload={handleDownloadIncome}
-          />
-
+					<IncomeList
+						transactions={incomeData}
+						onDelete={(id) => {
+							setOpenDeleteAlert({ show: true, data: id });
+						}}
+						onDownload={handleDownloadIncome}
+					/>
 				</div>
 
 				<Modal
@@ -131,17 +156,16 @@ const Income = () => {
 					<AddIncomeForm onAddIncome={handleAddIncome} />
 				</Modal>
 
-				<Modal 
+				<Modal
 					isOpen={openDeleteAlert.show}
-					onClose={() => setOpenDeleteAlert({show: false, data: null})}
+					onClose={() => setOpenDeleteAlert({ show: false, data: null })}
 					title="Delete Income"
 				>
-					<DeleteAlert 
+					<DeleteAlert
 						content="Are you sure you want to delete this income details?"
 						onDelete={() => deleteIncome(openDeleteAlert.data)}
 					/>
 				</Modal>
-
 			</div>
 		</DashboardLayout>
 	);
