@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const Expense = require('../models/Expense')
 const xlsx = require('xlsx')
+const { invalidateAIInsights } = require("./aiController");
 
 //Add expense src
 exports.addExpense = async(req, res) => {
@@ -25,6 +26,9 @@ exports.addExpense = async(req, res) => {
 
         await newExpense.save();
         res.status(200).json(newExpense);
+
+        // Invalidate so next GET /ai/insights regenerates
+		await invalidateAIInsights(req.user._id);
 
     } catch (error) {
         res.status(500).json({
@@ -82,6 +86,9 @@ exports.deleteExpense = async(req, res) => {
         res.json({
             message: "Expense deleted successfully"
         })
+
+        // Invalidate so next GET /ai/insights regenerates
+		await invalidateAIInsights(req.user._id);
 
     } catch (error) {
         res.status(500).json({

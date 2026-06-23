@@ -1,35 +1,24 @@
+const crypto = require("crypto");
 const Income = require("../models/Income");
 const Expense = require("../models/Expense");
- 
+const AIInsights = require("../models/AI_Insights");
 const groq = require("../services/groqService");
-
 const { buildFinancialSummary } = require("../utils/buildFinancialSummary");
 
-exports.getAIInsights = async (req, res) => {
-	try {
-		const userId = req.user._id;
+const hashSummary = (summary) =>
+  crypto.createHash("sha256").update(JSON.stringify(summary)).digest("hex");
 
-		const incomes = await Income.find({
-			userId,
-		});
-
-		const expenses = await Expense.find({
-			userId,
-		});
-
-		const financialSummary = buildFinancialSummary(incomes, expenses);
-
-		const completion = await groq.chat.completions.create({
-			model: "llama-3.3-70b-versatile",
-
-			messages: [
-				{
-					role: "system",
-					content: "You are a financial advisor. Respond only with valid JSON.",
-				},
-				{
-					role: "user",
-					content: `
+const fetchInsightsFromGroq = async (financialSummary) => {
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "system",
+        content: "You are a financial advisor. Respond only with valid JSON.",
+      },
+      {
+        role: "user",
+        content: `
 Analyze:
 
 ${JSON.stringify(financialSummary)}
@@ -37,38 +26,73 @@ ${JSON.stringify(financialSummary)}
 Return JSON:
 
 {
-  "summary":"",
-  "topCategory":"",
-  "spendingTrend":"",
-  "savingsOpportunity":"",
-  "riskScore":"",
-  "budgetSuggestion":"",
-  "prediction":"",
-  "recommendations":[],
-  "warnings":[]
+  "summary": "",
+  "topCategory": "",
+  "spendingTrend": "",
+  "savingsOpportunity": "",
+  "riskScore": 0,
+  "budgetSuggestion": "",
+  "prediction": "",
+  "recommendations": [],
+  "warnings": []
 }
 `,
-				},
-			],
+      },
+    ],
+    temperature: 0.7,
+  });
 
-			temperature: 0.7,
-		});
+  let raw = completion.choices[0].message.content;
+  raw = raw.replace(/```json/g, "").replace(/```/g, "").trim();
+  return JSON.parse(raw);
+};
 
-		let response = completion.choices[0].message.content;
 
-		response = response
-			.replace(/```json/g, "")
-			.replace(/```/g, "")
-			.trim();
+exports.getAIInsights = async (req, res) => {
+  try {
+    const userId = req.user._id;
 
-		const parsed = JSON.parse(response);
+    const [incomes, expenses] = await Promise.all([
+      Income.find({ userId }),
+      Expense.find({ userId }),
+    ]);
 
-		res.status(200).json(parsed);
-	} catch (err) {
-		console.log(err);
+    const financialSummary = buildFinancialSummary(incomes, expenses);
+    const currentHash = hashSummary(financialSummary);
 
-		res.status(500).json({
-			message: err.message,
-		});
-	}
+    
+    const cached = await AIInsights.findOne({ userId });
+    if (cached && cached.dataHash === currentHash) {
+      
+      return res.status(200).json(cached.toObject());
+    }
+
+    
+    const parsed = await fetchInsightsFromGroq(financialSummary);
+
+    
+    await AIInsights.findOneAndUpdate(
+      { userId },
+      { ...parsed, dataHash: currentHash },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json(parsed);
+  } catch (err) {
+    console.error("AI Insights error:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+exports.invalidateAIInsights = async (userId) => {
+  try {
+    await AIInsights.findOneAndUpdate(
+      { userId },
+      { dataHash: null } 
+    );
+  } catch (err) {
+    console.error("Failed to invalidate AI insights cache:", err);
+    
+  }
 };

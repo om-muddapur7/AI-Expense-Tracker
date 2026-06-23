@@ -1,91 +1,95 @@
-const User = require('../models/User')
-const Income = require('../models/Income')
-const xlsx = require('xlsx')
+const User = require("../models/User");
+const Income = require("../models/Income");
+const xlsx = require("xlsx");
+const { invalidateAIInsights } = require("./aiController");
+
 
 //Add income src
-exports.addIncome = async(req, res) => {
-    const userId = req.user.id;
+exports.addIncome = async (req, res) => {
+	const userId = req.user.id;
 
-    try {
-        const {icon, source, amount, date} = req.body;
+	try {
+		const { icon, source, amount, date } = req.body;
 
-        if(!source || !amount || !date){
-            return res.status(400).json({
-                message: "All fields are required"
-            })
-        }
+		if (!source || !amount || !date) {
+			return res.status(400).json({
+				message: "All fields are required",
+			});
+		}
 
-        const newIncome = new Income({
-            userId,
-            icon, 
-            source,
-            amount,
-            date: new Date(date)
-        });
+		const newIncome = new Income({
+			userId,
+			icon,
+			source,
+			amount,
+			date: new Date(date),
+		});
 
-        await newIncome.save();
-        res.status(200).json(newIncome);
+		await newIncome.save();
 
-    } catch (error) {
-        res.status(500).json({
-            message: "Server error"
-        })
-    }
-}
+		// Invalidate so next GET /ai/insights regenerates
+		await invalidateAIInsights(req.user._id);
+
+		res.status(200).json(newIncome);
+	} catch (error) {
+		res.status(500).json({
+			message: "Server error",
+		});
+	}
+};
 
 //get all income src
-exports.getAllIncome = async(req, res) => {
-    const userId = req.user.id;
+exports.getAllIncome = async (req, res) => {
+	const userId = req.user.id;
 
-    try {
-        const income = await Income.find({userId}).sort({date: -1});
-        res.json(income);
-    } catch (error) {
-        res.status(500).json({
-            message: "Server error"
-        })
-    }
-
-}
+	try {
+		const income = await Income.find({ userId }).sort({ date: -1 });
+		res.json(income);
+	} catch (error) {
+		res.status(500).json({
+			message: "Server error",
+		});
+	}
+};
 
 //download income sheet
-exports.downloadIncomeExcel = async(req, res) => {
-    const userId = req.user.id;
+exports.downloadIncomeExcel = async (req, res) => {
+	const userId = req.user.id;
 
-    try {
-        const income = await Income.find({userId}).sort({date: -1});
-        
-        const data = income.map((item) => ({
-            Source: item.source,
-            Amount: item.amount,
-            Date: item.date
-        }));
+	try {
+		const income = await Income.find({ userId }).sort({ date: -1 });
 
-        const wb = xlsx.utils.book_new();
-        const ws = xlsx.utils.json_to_sheet(data);
-        xlsx.utils.book_append_sheet(wb, ws, "Income");
-        xlsx.writeFile(wb, "income_details.xlsx");
-        res.download('income_details.xlsx');
+		const data = income.map((item) => ({
+			Source: item.source,
+			Amount: item.amount,
+			Date: item.date,
+		}));
 
-    } catch (error) {
-        res.status(500).json({
-            message: "Server error"
-        })
-    }
-
-}
+		const wb = xlsx.utils.book_new();
+		const ws = xlsx.utils.json_to_sheet(data);
+		xlsx.utils.book_append_sheet(wb, ws, "Income");
+		xlsx.writeFile(wb, "income_details.xlsx");
+		res.download("income_details.xlsx");
+	} catch (error) {
+		res.status(500).json({
+			message: "Server error",
+		});
+	}
+};
 
 //delete income
-exports.deleteIncome = async(req, res) => {
-    try {
-        await Income.findByIdAndDelete(req.params.id);
-        res.json({
-            message: "Income deleted successfully"
-        })
+exports.deleteIncome = async (req, res) => {
+	try {
+		await Income.findByIdAndDelete(req.params.id);
+		res.json({
+			message: "Income deleted successfully",
+		});
 
-    } catch (error) {
-        res.status(500).json({
-            message: "Server error"
-        })
-    }
-}
+        // Invalidate so next GET /ai/insights regenerates
+		await invalidateAIInsights(req.user._id);
+	} catch (error) {
+		res.status(500).json({
+			message: "Server error",
+		});
+	}
+};
