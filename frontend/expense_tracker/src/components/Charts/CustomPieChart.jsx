@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	PieChart,
 	Pie,
@@ -7,8 +7,10 @@ import {
 	Tooltip,
 	Legend,
 } from "recharts";
+
 import CustomTooltip from "./CustomTooltip";
 import CustomLegend from "./CustomLegend";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const CustomPieChart = ({
 	data,
@@ -17,6 +19,7 @@ const CustomPieChart = ({
 	colors,
 	showTextAnchor,
 }) => {
+	const { darkMode } = useContext(ThemeContext);
 
 	return (
 		<ResponsiveContainer width="100%" height={380}>
@@ -28,36 +31,43 @@ const CustomPieChart = ({
 					cx="50%"
 					cy="50%"
 					outerRadius={130}
-					innerRadius={100}
+					innerRadius={95}
 					labelLine={false}
 				>
 					{data.map((entry, index) => (
-						<Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+						<Cell
+							key={`cell-${index}`}
+							fill={colors[index % colors.length]}
+							stroke={darkMode ? "#1E293B" : "#FFFFFF"}
+							strokeWidth={2}
+						/>
 					))}
 				</Pie>
 
-				<Tooltip content={CustomTooltip} />
-				<Legend content={CustomLegend}/>
+				<Tooltip content={<CustomTooltip />} />
+
+				<Legend content={<CustomLegend />} />
 
 				{showTextAnchor && (
 					<>
 						<text
 							x="50%"
-							y="48%"
+							y="47%"
 							textAnchor="middle"
 							dominantBaseline="middle"
-							fill="#666"
+							fill={darkMode ? "#94A3B8" : "#666666"}
 							fontSize={14}
+							fontWeight={500}
 						>
 							{label}
 						</text>
 
 						<text
 							x="50%"
-							y="54%"
+							y="55%"
 							textAnchor="middle"
 							dominantBaseline="middle"
-							fill="#333"
+							fill={darkMode ? "#F8FAFC" : "#333333"}
 							fontSize={24}
 							fontWeight={600}
 						>

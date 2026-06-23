@@ -8,25 +8,20 @@ const Modal = ({ children, isOpen, onClose, title }) => {
 			<div className="relative p-4 w-full max-w-2xl max-h-full ">
 				{/* Modal Content */}
 
-				<div className="relative bg-white rounded-lg shadow-sm ">
-					{/* Modal header */}
-
-					<div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600  border-gray-200">
-						<h3 className="text-lg font-medium text-gray-900 ">
-							{title}
-						</h3>
+				<div className="relative bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700">
+					<div className="flex items-center justify-between p-4 md:p-5 border-b border-gray-200 dark:border-slate-700">
+						<h3 className="text-lg font-medium text-primary">{title}</h3>
 
 						<button
 							type="button"
-							className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+							className="text-muted bg-transparent hover:bg-gray-200 hover:text-primary rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-slate-700 cursor-pointer"
 							onClick={onClose}
 						>
 							X
 						</button>
 					</div>
 
-					{/* Modal body */}
-					<div className="p-4 md:p-5 space-y-4">{children}</div>
+					<div className="p-4 md:p-5 space-y-4 text-primary">{children}</div>
 				</div>
 			</div>
 		</div>

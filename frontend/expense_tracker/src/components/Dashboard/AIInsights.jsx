@@ -13,12 +13,12 @@ const InsightCard = ({ icon, title, value }) => (
 		<div className="flex items-center gap-2 mb-2">
 			<span className="text-xl">{icon}</span>
 
-			<h3 className="text-sm font-medium text-gray-500">
+			<h3 className="text-sm font-medium text-muted">
 				{title}
 			</h3>
 		</div>
 
-		<p className="text-gray-800 font-medium">
+		<p className="text-prim font-medium">
 			{value || "No data available"}
 		</p>
 	</div>
@@ -56,18 +56,18 @@ const AIInsights = () => {
 		<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 			{/* Summary */}
 			<div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-				<h3 className="text-sm font-medium text-gray-500 mb-2">
+				<h3 className="text-sm font-medium text-muted mb-2">
 					📊 Financial Summary
 				</h3>
 
-				<p className="text-gray-700">
+				<p className="text-secondary">
 					{insights.summary}
 				</p>
 			</div>
 
 			{/* Top Category */}
 			<div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-				<h3 className="text-sm font-medium text-gray-500 mb-2">
+				<h3 className="text-sm font-medium text-muted mb-2">
 					🏆 Top Spending Category
 				</h3>
 
@@ -79,7 +79,7 @@ const AIInsights = () => {
 
 		{/* Recommendations */}
 		<div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mt-4">
-			<h3 className="text-sm font-medium text-gray-500 mb-3">
+			<h3 className="text-sm font-medium text-muted mb-3">
 				💡 Recommendations
 			</h3>
 

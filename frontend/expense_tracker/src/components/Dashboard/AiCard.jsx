@@ -31,14 +31,14 @@ const AiCard = ({ aiData, onSeeMore }) => {
 	const risk = riskScore !== null ? getRiskColor(riskScore) : null;
 
 	return (
-		<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-4">
+		<div className="bg-gradient-to-br from-white to-emerald-50/30 dark:from-slate-800 dark:to-slate-800 rounded-2xl border border-emerald-100 dark:border-slate-700 shadow-sm p-5 flex flex-col gap-4">
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					<div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
 						<LuSparkles className="text-violet-600 text-base" />
 					</div>
-					<h3 className="text-sm font-semibold text-gray-800">AI Insights</h3>
+					<h3 className="text-sm font-semibold text-prim">AI Insights</h3>
 				</div>
 				<button
 					onClick={onSeeMore}
@@ -50,11 +50,11 @@ const AiCard = ({ aiData, onSeeMore }) => {
 
 			{/* Summary */}
 			{summary ? (
-				<p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+				<p className="text-xs text-muted leading-relaxed line-clamp-2">
 					{summary}
 				</p>
 			) : (
-				<p className="text-xs text-gray-400 italic">
+				<p className="text-xs text-muted italic">
 					No insights available yet.
 				</p>
 			)}
@@ -63,14 +63,14 @@ const AiCard = ({ aiData, onSeeMore }) => {
 			{riskScore !== null && (
 				<div className="space-y-1">
 					<div className="flex items-center justify-between">
-						<span className="text-xs text-gray-500 font-medium">
+						<span className="text-xs text-muted font-medium">
 							Risk Score
 						</span>
 						<span className={`text-xs font-semibold ${risk.text}`}>
 							{riskScore}/10 · {risk.label}
 						</span>
 					</div>
-					<div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+					<div className="w-full h-1.5 bg-emerald-50 dark:bg-slate-700 rounded-full overflow-hidden">
 						<div
 							className={`h-full rounded-full ${risk.bar} transition-all duration-500`}
 							style={{ width: `${(riskScore / 10) * 100}%` }}

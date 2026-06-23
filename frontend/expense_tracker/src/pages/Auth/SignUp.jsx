@@ -74,8 +74,8 @@ const SignUp = () => {
 	return (
 		<Authlayout>
 			<div className="lg:w-[70%] w-full flex flex-col justify-center py-6 md:py-0 md:h-full overflow-y-auto">
-				<h3 className="text-xl font-semibold text-black">Create an account</h3>
-				<p className="text-xs text-slate-700 mt-[5px] mb-6">
+				<h3 className="text-xl font-semibold text-primary">Create an account</h3>
+				<p className="text-xs text-secondary mt-[5px] mb-6">
 					Join us to start tracking your expenses and income
 				</p>
 
@@ -115,7 +115,7 @@ const SignUp = () => {
 						SIGN UP
 					</button>
 
-					<p className="text-[13px] text-slate-800 mt-3">
+					<p className="text-[13px] text-secondary mt-3">
 						Already have an account ?{" "}
 						<Link className="font-medium text-primary underline" to="/login">
 							Login
