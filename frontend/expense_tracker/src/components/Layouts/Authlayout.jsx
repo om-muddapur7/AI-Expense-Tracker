@@ -10,12 +10,12 @@ const Authlayout = ({children}) => {
         {children}
       </div>
 
-        <div className='hidden md:block w-[40vw] h-screen bg-violet-50 bg-auth-bg-img bg-cover bg-no-repeat bg-center overflow-hidden p-8 relative'>
-            <div className='w-48 h-48 rounded-[40px] bg-purple-600 absolute -top-7 -left-5 ' />
+        <div className='hidden md:block w-[40vw] h-screen bg-emerald-50 bg-auth-bg-img bg-cover bg-no-repeat bg-center overflow-hidden p-8 relative'>
+            <div className='w-48 h-48 rounded-[40px] bg-green-600 absolute -top-7 -left-5 ' />
 
-            <div className='w-48 h-56 rounded-[40px] border-[20px] border-fuchsia-600 absolute top-[30%] -right-10 ' />
+            <div className='w-48 h-56 rounded-[40px] border-[20px] border-emerald-600 absolute top-[30%] -right-10 ' />
 
-            <div className='w-48 h-48 rounded-[40px] bg-violet-500 absolute -bottom-7 -left-5' />
+            <div className='w-48 h-48 rounded-[40px] bg-emerald-500 absolute -bottom-7 -left-5' />
 
             <div className='grid grid-cols-1 z-20'>
               <StatusInfoCard 
@@ -38,7 +38,7 @@ export default Authlayout;
 
 const StatusInfoCard = ({icon, label, value, color}) => {
   return (
-    <div className='flex gap-6 bg-white p-4 rounded-xl shadow-md shadow-purple-400/10 border border-gray-200/50 z-10' >
+    <div className='flex gap-6 bg-white p-4 rounded-xl shadow-md shadow-green-400/10 border border-gray-200/50 z-10' >
       <div className={`w-12 h-12 flex items-center justify-center text-[26px] text-white ${color} rounded-full drop-shadow-xl`}>
         {icon}
       </div>

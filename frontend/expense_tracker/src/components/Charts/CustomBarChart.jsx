@@ -13,14 +13,14 @@ import {
 
 const CustomBarChart = ({ data }) => {
 	const getBarColor = (index) => {
-		return index % 2 === 0 ? "#875cf5" : "#cfbefb";
+		return index % 2 === 0 ? "#059669" : "#A7F3D0";
 	};
 
 	const CustomTooltip = ({ active, payload }) => {
 		if (active && payload && payload.length) { 
 			return (
 				<div className="bg-white shadow-md rounded-lg p-2 border border-gray-300">
-					<p className="text-xs font-semibold text-purple-800 mb-1">
+					<p className="text-xs font-semibold text-green-800 mb-1">
 						{payload[0].payload.category}
 					</p>
 

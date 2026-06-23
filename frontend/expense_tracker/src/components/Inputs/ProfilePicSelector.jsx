@@ -28,7 +28,7 @@ const ProfilePicSelector = ({image, setImage}) => {
         <input type="file" ref={inputRef} accept='image/*' onChange={handleImageChange} className='hidden' />
 
         {!image ? (
-            <div className='w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center bg-purple-600/10 relative'>
+            <div className='w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center bg-green-600/10 relative'>
                 <LuUser size={40} className='text-4xl text-primary' />
 
                 <button type='button' onClick={onChooseFile} className='w-8 h-8 rounded-full bg-primary flex items-center justify-center rounded-full absolute -bottom-1 -right-1'><LuUpload size={20} className='text-white' /></button>
