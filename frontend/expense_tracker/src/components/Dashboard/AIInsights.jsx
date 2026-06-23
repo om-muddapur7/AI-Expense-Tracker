@@ -8,6 +8,22 @@ const getAIInsights = async () => {
 	return response.data;
 };
 
+const InsightCard = ({ icon, title, value }) => (
+	<div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all">
+		<div className="flex items-center gap-2 mb-2">
+			<span className="text-xl">{icon}</span>
+
+			<h3 className="text-sm font-medium text-gray-500">
+				{title}
+			</h3>
+		</div>
+
+		<p className="text-gray-800 font-medium">
+			{value || "No data available"}
+		</p>
+	</div>
+);
+
 const AIInsights = () => {
 	const [loading, setLoading] = useState(true);
 
@@ -32,36 +48,72 @@ const AIInsights = () => {
 	if (loading) return <div className="card">Loading AI Insights...</div>;
 
 	return (
-		<div className="bg-white rounded-xl p-5 shadow-sm">
-			<h2 className="font-semibold text-lg mb-4">AI Financial Insights</h2>
+	<div>
+		<h2 className="text-xl font-semibold mb-4">
+			🤖 AI Financial Insights
+		</h2>
 
-			<p className="mb-4">{insights.summary}</p>
+		<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+			{/* Summary */}
+			<div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+				<h3 className="text-sm font-medium text-gray-500 mb-2">
+					📊 Financial Summary
+				</h3>
 
-			<div className="mb-4">
-				<strong>Top Spending Category:</strong> {insights.topCategory}
+				<p className="text-gray-700">
+					{insights.summary}
+				</p>
 			</div>
 
-			<div className="mb-4">
-				<h3 className="font-medium">Recommendations</h3>
+			{/* Top Category */}
+			<div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+				<h3 className="text-sm font-medium text-gray-500 mb-2">
+					🏆 Top Spending Category
+				</h3>
 
-				<ul className="list-disc ml-5">
-					{insights.recommendations?.map((item, idx) => (
-						<li key={idx}>{item}</li>
-					))}
-				</ul>
-			</div>
-
-			<div>
-				<h3 className="font-medium text-red-500">Warnings</h3>
-
-				<ul className="list-disc ml-5">
-					{insights.warnings?.map((item, idx) => (
-						<li key={idx}>{item}</li>
-					))}
-				</ul>
+				<p className="text-xl font-bold text-purple-600">
+					{insights.topCategory}
+				</p>
 			</div>
 		</div>
-	);
+
+		{/* Recommendations */}
+		<div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mt-4">
+			<h3 className="text-sm font-medium text-gray-500 mb-3">
+				💡 Recommendations
+			</h3>
+
+			<div className="grid gap-3">
+				{insights.recommendations?.map((item, idx) => (
+					<div
+						key={idx}
+						className="bg-green-50 border border-green-100 rounded-lg p-3"
+					>
+						{item}
+					</div>
+				))}
+			</div>
+		</div>
+
+		{/* Warnings */}
+		<div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mt-4">
+			<h3 className="text-sm font-medium text-red-500 mb-3">
+				⚠ Warnings
+			</h3>
+
+			<div className="grid gap-3">
+				{insights.warnings?.map((item, idx) => (
+					<div
+						key={idx}
+						className="bg-red-50 border border-red-100 rounded-lg p-3"
+					>
+						{item}
+					</div>
+				))}
+			</div>
+		</div>
+	</div>
+);
 };
 
 export default AIInsights;

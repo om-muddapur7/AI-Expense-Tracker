@@ -16,6 +16,8 @@ import Last30DaysExpenses from "../../components/Dashboard/Last30DaysExpenses";
 import RecentIncomeWithChart from "../../components/Dashboard/RecentIncomeWithChart";
 import RecentIncome from "../../components/Dashboard/RecentIncome";
 import AIInsights from "../../components/Dashboard/AIInsights";
+import AiInsights from "./AiInsights";
+import AiCard from "../../components/Dashboard/AiCard";
 
 const Home = () => {
 	useUserAuth();
@@ -23,6 +25,7 @@ const Home = () => {
 	const navigate = useNavigate();
 
 	const [dashboardData, setDashboardData] = useState(null);
+  const [aiData, setAiData] = useState(null);
 	const [loading, setLoading] = useState(false);
 
 	const fetchDashboardData = async () => {
@@ -45,8 +48,18 @@ const Home = () => {
     }
 	};
 
+  const fetchAiData = async () => {
+    try {
+      const response = await axiosInstance.get(`${API_PATHS.AI.GET_INSIGHTS}`);
+      if (response.data) setAiData(response.data);
+    } catch (error) {
+      console.log("AI insights fetch failed", error);
+    }
+  };
+
   useEffect(() => {
     fetchDashboardData();
+    fetchAiData();
     
     return () => {}
   }, [])
@@ -89,7 +102,10 @@ const Home = () => {
             totalExpense={dashboardData?.totalExpense || 0}
           />
 
-          <AIInsights />
+          <AiCard
+            aiData={aiData}
+            onSeeMore={() => navigate("/aiinsights")}
+          />
 
           <ExpenseTransactions 
             transactions={dashboardData?.last30daysExpenses?.transactions || []}

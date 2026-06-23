@@ -1,66 +1,74 @@
-const Income = require('../models/Income')
-const Expense = require('../models/Expense')
-const { model } = require("../services/geminiService.js");
-const { buildFinancialSummary } = require("../utils/buildFinancialSummary.js");
+const Income = require("../models/Income");
+const Expense = require("../models/Expense");
  
-exports.getAIInsights = async (
-  req,
-  res
-) => {
-  try {
-    const userId = req.user._id;
+const groq = require("../services/groqService");
 
-    const incomes = await Income.find({
-      userId,
-    });
+const { buildFinancialSummary } = require("../utils/buildFinancialSummary");
 
-    const expenses = await Expense.find({
-      userId,
-    });
+exports.getAIInsights = async (req, res) => {
+	try {
+		const userId = req.user._id;
 
-    const financialSummary =
-      buildFinancialSummary(
-        incomes,
-        expenses
-      );
+		const incomes = await Income.find({
+			userId,
+		});
 
-    const prompt = `
-Analyze this financial summary.
+		const expenses = await Expense.find({
+			userId,
+		});
+
+		const financialSummary = buildFinancialSummary(incomes, expenses);
+
+		const completion = await groq.chat.completions.create({
+			model: "llama-3.3-70b-versatile",
+
+			messages: [
+				{
+					role: "system",
+					content: "You are a financial advisor. Respond only with valid JSON.",
+				},
+				{
+					role: "user",
+					content: `
+Analyze:
 
 ${JSON.stringify(financialSummary)}
 
-Return ONLY JSON.
+Return JSON:
 
 {
   "summary":"",
   "topCategory":"",
+  "spendingTrend":"",
+  "savingsOpportunity":"",
+  "riskScore":"",
+  "budgetSuggestion":"",
+  "prediction":"",
   "recommendations":[],
   "warnings":[]
 }
-`;
+`,
+				},
+			],
 
-    const result =
-      await model.generateContent(
-        prompt
-      );
+			temperature: 0.7,
+		});
 
-    let response =
-      result.response.text();
+		let response = completion.choices[0].message.content;
 
-    response = response
-      .replace(/```json/g, "")
-      .replace(/```/g, "");
+		response = response
+			.replace(/```json/g, "")
+			.replace(/```/g, "")
+			.trim();
 
-    const parsed =
-      JSON.parse(response);
+		const parsed = JSON.parse(response);
 
-    res.status(200).json(parsed);
-  } catch (err) {
-    console.log(err);
+		res.status(200).json(parsed);
+	} catch (err) {
+		console.log(err);
 
-    res.status(500).json({
-      message:
-        "Failed to generate insights",
-    });
-  }
+		res.status(500).json({
+			message: err.message,
+		});
+	}
 };

@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.0",
     "multer": "^2.1.1",
+    "openai": "^6.44.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
