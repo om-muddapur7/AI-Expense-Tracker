@@ -7,6 +7,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
 	const [email, setEmail] = useState("");
@@ -55,6 +56,28 @@ const Login = () => {
 		}
 	};
 
+	const handleGoogleLogin = async (credentialResponse) => {
+		try {
+			const response = await axiosInstance.post(API_PATHS.AUTH.GOOGLE_LOGIN, {
+				credential: credentialResponse.credential,
+			});
+
+			const { token, user } = response.data;
+
+			if (token) {
+				localStorage.setItem("token", token);
+				updateUser(user);
+				navigate("/dashboard");
+			}
+		} catch (error) {
+			if (error.response && error.response.data.message) {
+				setError(error.response.data.message);
+			} else {
+				setError("Google login failed");
+			}
+		}
+	};
+
 	return (
 		<Authlayout>
 			<div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center">
@@ -91,8 +114,30 @@ const Login = () => {
 						LOGIN
 					</button>
 
-					<p className="text-[13px] text-secondary mt-3">
-						Don't have an account?{" "}
+					<div className="flex items-center my-5">
+						<div className="flex-1 h-px bg-gray-300 dark:bg-gray-700"></div>
+
+						<span className="mx-3 text-xs text-gray-500 dark:text-gray-400">
+							OR
+						</span>
+
+						<div className="flex-1 h-px bg-gray-300 dark:bg-gray-700"></div>
+					</div>
+
+					<div className="flex justify-center">
+						<GoogleLogin
+							onSuccess={handleGoogleLogin}
+							onError={() => setError("Google login failed")}
+							theme="outline"
+							size="large"
+							text="signin_with"
+							shape="rectangular"
+							width="320"
+						/>
+					</div>
+
+					<p className="flex items-center justify-center text-[13px] text-secondary mt-3">
+						Don't have an account?  ‎ ‎  {"   "}
 						<Link
 							className="font-medium text-emerald-600 dark:text-emerald-400 underline"
 							to="/signup"

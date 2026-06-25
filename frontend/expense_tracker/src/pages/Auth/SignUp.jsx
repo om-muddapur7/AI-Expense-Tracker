@@ -8,6 +8,7 @@ import { API_PATHS } from "../../utils/apiPaths";
 import uploadImage from "../../utils/uploadImage";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
+import { GoogleLogin } from "@react-oauth/google";
 
 const SignUp = () => {
 	const [fullName, setFullName] = useState("");
@@ -71,10 +72,34 @@ const SignUp = () => {
 		}
 	};
 
+	const handleGoogleSignUp = async (credentialResponse) => {
+		try {
+			const response = await axiosInstance.post(API_PATHS.AUTH.GOOGLE_LOGIN, {
+				credential: credentialResponse.credential,
+			});
+
+			const { token, user } = response.data;
+
+			if (token) {
+				localStorage.setItem("token", token);
+				updateUser(user);
+				navigate("/dashboard");
+			}
+		} catch (error) {
+			if (error.response && error.response.data.message) {
+				setError(error.response.data.message);
+			} else {
+				setError("Google Sign Up failed");
+			}
+		}
+	};
+
 	return (
 		<Authlayout>
 			<div className="lg:w-[70%] w-full flex flex-col justify-center py-6 md:py-0 md:h-full overflow-y-auto">
-				<h3 className="text-xl font-semibold text-primary">Create an account</h3>
+				<h3 className="text-xl font-semibold text-primary">
+					Create an account
+				</h3>
 				<p className="text-xs text-secondary mt-[5px] mb-6">
 					Join us to start tracking your expenses and income
 				</p>
@@ -115,8 +140,30 @@ const SignUp = () => {
 						SIGN UP
 					</button>
 
-					<p className="text-[13px] text-secondary mt-3">
-						Already have an account ?{" "}
+					<div className="flex items-center my-5">
+						<div className="flex-1 h-px bg-gray-300 dark:bg-gray-700"></div>
+
+						<span className="mx-3 text-xs text-gray-500 dark:text-gray-400">
+							OR
+						</span>
+
+						<div className="flex-1 h-px bg-gray-300 dark:bg-gray-700"></div>
+					</div>
+
+					<div className="flex justify-center">
+						<GoogleLogin
+							onSuccess={handleGoogleSignUp}
+							onError={() => setError("Google Sign Up failed")}
+							theme="outline"
+							size="large"
+							text="signup_with"
+							shape="rectangular"
+							width="320"
+						/>
+					</div>
+
+					<p className=" flex justify-center text-[13px] text-secondary mt-3">
+						Already have an account?‎ ‎ {" "}
 						<Link className="font-medium text-primary underline" to="/login">
 							Login
 						</Link>
