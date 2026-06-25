@@ -28,7 +28,7 @@ const DashboardLayout = ({ children, activeMenu }) => {
 				</div>
 			)}
 
-			<footer className="w-full mt-10 border-t border-white/10 backdrop-blur-md bg-white/5">
+			<footer className="w-full mt-0.5 border-t border-white/10 backdrop-blur-md bg-white/5">
       <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between">
         <p className="text-sm text-gray-400">
           © 2026 AI Expense Tracker. All rights reserved.
